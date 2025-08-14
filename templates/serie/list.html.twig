@@ -7,10 +7,10 @@
 
 <section>
     {% if page > 1 %}
-        <a href="{{ path('serie-list', {'page' : page -1}) }}">Page précédente</a>&nbsp;
+        <a href="{{ path('list', {'page' : page -1}) }}">Page précédente</a>&nbsp;
     {% endif %}
-    {% if page < total_pages %}
-        <a href="{{ path('serie-list', {'page' : page +1}) }}">Page suivante</a>&nbsp;
+    {% if page < totalPages %}
+        <a href="{{ path('list', {'page' : page +1}) }}">Page suivante</a>&nbsp;
     {% endif %}
 </section>
 
