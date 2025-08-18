@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Catalogue{% endblock %}
+
+{% block body %}
+    <h2>Catalogue</h2>
+
+    <section>
+        {% if page > 1 %}
+            <a href="{{ path('serie_list', {'page' : page - 1}) }}">Page précédente</a>&nbsp;
+        {% endif %}
+        {% if page < total_pages %}
+            <a href="{{ path('serie_list', {'page' : page + 1}) }}">Page suivante</a>
+        {% endif %}
+    </section>
+
+    <section class="series-list">
+
+        {%  for serie in series %}
+        <a href="{{ path('serie_detail', {id: serie.id }) }}">
+            <img src="{{ asset('uploads/posters/series/' ~ serie.poster) }}"
+                 alt="{{ 'Poster de ' ~ serie.name }}" width="250px" loading="lazy" >
+        </a>
+        {% else %}
+            <p>Pas de série</p>
+        {% endfor %}
+    </section>
+
+{% endblock %}
