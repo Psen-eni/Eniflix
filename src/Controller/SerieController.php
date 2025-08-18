@@ -87,10 +87,11 @@ final class SerieController extends AbstractController
 
 
         if ($form->isSubmitted()) {
-
-            $serie->setDateCreated(new \DateTime());
             $em->persist($serie);
             $em->flush();
+
+            $this->addFlash('success', 'Une série a été enregistrée');
+
             return $this->redirectToRoute('serie_detail', ['id' => $serie->getId()]);
         }
 

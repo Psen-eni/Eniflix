@@ -36,7 +36,9 @@ class SerieType extends AbstractType
             ->add('firstAirDate', DateType::class, [
                 'widget' => 'single_text',
             ])
-            ->add('lastAirDate', DateType::class)
+            ->add('lastAirDate', DateType::class, [
+                'widget' => 'single_text',
+            ])
             ->add('backdrop')
             ->add('poster')
             ->add('submit', SubmitType::class, [
