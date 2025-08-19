@@ -18,4 +18,10 @@
     <span>{{ serie.firstAirDate|date('d/m/Y') }}</span>
 
     <p>{{ serie.overview }}</p>
+
+    <a href="{{ path('serie_update', {id: serie.id}) }}" class="btn btn-primary">Editer</a>
+    &nbsp;
+    <a href="{{ path('serie_delete', {id: serie.id, token : csrf_token('delete' ~ serie.id)}) }}"
+       class="btn btn-danger"
+       onclick="return confirm('Êtes-vous sur ?')">Supprimer</a>
 {% endblock %}
