@@ -8,9 +8,11 @@ use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/serie', name: 'serie')]
 final class SerieController extends AbstractController
@@ -62,7 +64,6 @@ final class SerieController extends AbstractController
         ]);
     }
 
-
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
     public function detail(Serie $serie): Response
     {
@@ -73,15 +74,23 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/create', name: '_create')]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
 
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $file = ($form->get('poster_file')->getData());
+            if ($file instanceof UploadedFile) {
+                $name = $slugger->slug($serie->getName()) . '-' . uniqid() . '.' . $file->guessExtension();
+                $file->move('uploads/posters/series', $name);
+                $serie->setPoster($name);
+            }
+
+
             $em->persist($serie);
             $em->flush();
 
@@ -96,7 +105,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/update{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function update(Serie $serie, Request $request, EntityManagerInterface $em): Response
+    public function update(Serie $serie, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
 
         $form = $this->createForm(SerieType::class, $serie);
@@ -104,8 +113,15 @@ final class SerieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
 
+            $file = ($form->get('poster_file')->getData());
+            if ($file instanceof UploadedFile) {
+                $name = $slugger->slug($serie->getName()) . '-' . uniqid() . '.' . $file->guessExtension();
+                $file->move('uploads/posters/series', $name);
+                $serie->setPoster($name);
+            }
+
+            $em->flush();
             $this->addFlash('success', 'Une série a été mise à jour');
 
             return $this->redirectToRoute('serie_detail', ['id' => $serie->getId()]);
@@ -115,10 +131,9 @@ final class SerieController extends AbstractController
             'serie_form' => $form,
         ]);
     }
-    #[Route('/delete{id}', name: '_delete', requirements: ['id' => '\d+'])]
+    #[Route('/delete/{id}', name: '_delete', requirements: ['id' => '\d+'])]
     public function delete(Serie $serie, EntityManagerInterface $em, Request $request): Response
     {
-
 
         if ($this->isCsrfTokenValid('delete'.$serie->getId(), $request->get('_token'))) {
             $em->remove($serie);
@@ -130,10 +145,6 @@ final class SerieController extends AbstractController
 
             return $this->redirectToRoute('serie_list');
         }
-
-
-
-
 
         return $this->redirectToRoute('serie_list');
     }

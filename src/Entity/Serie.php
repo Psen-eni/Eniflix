@@ -53,7 +53,7 @@ class Serie
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Assert\GreaterThan(propertyPath: 'firstAirDate')]
     #[Assert\When(
-        expression: "this.getStatus() == 'ended' || this.getStatus() == 'canceled' ",
+        expression: "this.getStatus() == 'Ended' || this.getStatus() == 'Canceled' ",
         constraints: [
             new Assert\NotBlank(message: 'Vu le statut il faut une date de fin'),
             ]
