@@ -19,7 +19,7 @@ class SerieType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom de la série',
-                'required' => true,
+                'required' => false,
             ])
             ->add('overview', TextareaType::class)
             ->add('status', ChoiceType::class, [
@@ -28,7 +28,7 @@ class SerieType extends AbstractType
                     'Terminée' => 'Ended',
                     'Abandonée' => 'Canceled',
                 ],
-                'placeholder' => ' -- Choisissez un statut',
+                'placeholder' => ' -- Choisissez un statut --',
             ])
             ->add('vote')
             ->add('popularity')

@@ -81,7 +81,7 @@ final class SerieController extends AbstractController
         $form->handleRequest($request);
 
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($serie);
             $em->flush();
 
@@ -103,7 +103,7 @@ final class SerieController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
             $this->addFlash('success', 'Une série a été mise à jour');
