@@ -74,7 +74,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/create', name: '_create')]
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, ParameterBagInterface $parameterBag): Response
     {
         $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
@@ -86,7 +86,8 @@ final class SerieController extends AbstractController
             $file = ($form->get('poster_file')->getData());
             if ($file instanceof UploadedFile) {
                 $name = $slugger->slug($serie->getName()) . '-' . uniqid() . '.' . $file->guessExtension();
-                $file->move('uploads/posters/series', $name);
+                $dir = $parameterBag->get('serie')['poster_directory'];
+                $file->move($dir, $name);
                 $serie->setPoster($name);
             }
 
@@ -105,7 +106,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/update{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function update(Serie $serie, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function update(Serie $serie, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, ParameterBagInterface $parameterBag): Response
     {
 
         $form = $this->createForm(SerieType::class, $serie);
@@ -117,7 +118,15 @@ final class SerieController extends AbstractController
             $file = ($form->get('poster_file')->getData());
             if ($file instanceof UploadedFile) {
                 $name = $slugger->slug($serie->getName()) . '-' . uniqid() . '.' . $file->guessExtension();
+                $dir = $parameterBag->get('serie')['poster_directory'];
                 $file->move('uploads/posters/series', $name);
+
+
+                // si je modifie le poster 'file_exists' va vérifier si il existe avant de le remplacer/supprimer
+                if ($serie->getPoster() && file_exists('uploads/posters/series/' . $serie->getPoster())) {
+                    unlink($dir . $serie->getPoster());
+                }
+
                 $serie->setPoster($name);
             }
 
