@@ -6,6 +6,7 @@ use App\Entity\Serie;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -38,13 +39,28 @@ class SerieType extends AbstractType
             ])
             ->add('lastAirDate', DateType::class, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('backdrop')
-            ->add('poster')
-            ->add('submit', SubmitType::class, [
-                'label' => 'Enregistrer',
+            ->add('poster_file', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'maxSizeMessage' => 'Votre fichier est trop lourd !',
+                        'mimeTypes' => [
+                        'image/jpeg',
+                        'image/png',
+                        'image/jpg',
+                     ],
+                        'mimeTypesMessage' => 'Les formats acceptés sont jpeg, png, jpg',
+                    ])
+                ]
             ])
-        ;
+            ->add('submit', SubmitType::class, [
+        'label' => 'Enregistrer',
+    ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
