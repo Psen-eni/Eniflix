@@ -20,6 +20,9 @@
         <a href="{{ path('serie_detail', {id: serie.id }) }}">
             <img src="{{ asset('uploads/posters/series/' ~ serie.poster) }}"
                  alt="{{ 'Poster de ' ~ serie.name }}" width="250px" loading="lazy" >
+            {% for season in serie.seasons %}
+                {{ season.number }} |
+            {% endfor %}
         </a>
         {% else %}
             <p>Pas de série</p>

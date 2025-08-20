@@ -23,22 +23,25 @@ final class SerieController extends AbstractController
     {
         //$series = $serieRepository->findAll();
 
-        $nbPerPage = $parameters->get('serie')['nb_max'];
-        $offset = ($page - 1) * $nbPerPage;
+        $nbParPage = $parameters->get('serie')['nb_max'];
+        $offset = ($page - 1) * $nbParPage;
         $criterias = [
 //            'status' => 'Returning',
 //            'genre' => 'Drama',
         ];
 
-        $series = $serieRepository->findBy(
-            $criterias,
-            ['popularity' => 'DESC'],
-            $nbPerPage,
-            $offset
-        );
+//        $series = $serieRepository->findBy(
+//            $criterias,
+//            ['popularity' => 'DESC'],
+//            $nbPerPage,
+//            $offset
+//        );
+
+        $series = $serieRepository->getSeriesWithSeasons( $nbParPage, $offset);
+
 
         $total = $serieRepository->count($criterias);
-        $totalPages = ceil($total / $nbPerPage);
+        $totalPages = ceil($total / $nbParPage);
 
         return $this->render('serie/list.html.twig', [
                 'series' => $series,

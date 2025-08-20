@@ -19,6 +19,13 @@
 
     <p>{{ serie.overview }}</p>
 
+{#   -- Affichage des saisons -- #}
+   <ul>
+       {% for season in serie.seasons %}
+            <li>{{ season.number }} - {{ season.firstAirDate|date('d/m/Y') }} - {{ season.overview }}</li>
+       {% endfor %}
+   </ul>
+
     <a href="{{ path('serie_update', {id: serie.id}) }}" class="btn btn-primary">Editer</a>
     &nbsp;
     <form method="post" action="{{ path('serie_delete', {id: serie.id}) }}"
