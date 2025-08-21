@@ -25,12 +25,13 @@
             <li>{{ season.number }} - {{ season.firstAirDate|date('d/m/Y') }} - {{ season.overview }}</li>
        {% endfor %}
    </ul>
-
-    <a href="{{ path('serie_update', {id: serie.id}) }}" class="btn btn-primary">Editer</a>
-    &nbsp;
-    <form method="post" action="{{ path('serie_delete', {id: serie.id}) }}"
-          onsubmit="return confirm('Êtes-vous sûr ?');" style="display:inline">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ serie.id) }}">
-        <button class="btn btn-danger">Supprimer</button>
-    </form>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('serie_update', {id: serie.id}) }}" class="btn btn-primary">Editer</a>
+        &nbsp;
+        <form method="post" action="{{ path('serie_delete', {id: serie.id}) }}"
+              onsubmit="return confirm('Êtes-vous sûr ?');" style="display:inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ serie.id) }}">
+            <button class="btn btn-danger">Supprimer</button>
+        </form>
+    {% endif %}
 {% endblock %}

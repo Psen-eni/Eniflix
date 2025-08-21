@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File; // ✅ CORRECT import
 
 class SerieType extends AbstractType
 {
@@ -50,17 +51,17 @@ class SerieType extends AbstractType
                         'maxSize' => '1024k',
                         'maxSizeMessage' => 'Votre fichier est trop lourd !',
                         'mimeTypes' => [
-                        'image/jpeg',
-                        'image/png',
-                        'image/jpg',
-                     ],
+                            'image/jpeg',
+                            'image/png',
+                            'image/jpg',
+                        ],
                         'mimeTypesMessage' => 'Les formats acceptés sont jpeg, png, jpg',
                     ])
                 ]
             ])
             ->add('submit', SubmitType::class, [
-        'label' => 'Enregistrer',
-    ]);
+                'label' => 'Enregistrer',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
