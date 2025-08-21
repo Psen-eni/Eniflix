@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\SeasonsRepository;
+use App\Repository\SeasonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SeasonsRepository::class)]
+#[ORM\Entity(repositoryClass: SeasonRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Season
 {
     #[ORM\Id]
@@ -26,18 +27,18 @@ class Season
     #[ORM\Column(nullable: true)]
     private ?int $tmdbId = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $poster = null;
 
     #[ORM\Column]
-    private ?\DateTime $datetime = null;
+    private ?\DateTime $dateCreated;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTime $dateModified = null;
+    private ?\DateTime $dateModified;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?serie $serie = null;
+    private ?Serie $serie = null;
 
     public function getId(): ?int
     {
@@ -97,21 +98,21 @@ class Season
         return $this->poster;
     }
 
-    public function setPoster(string $poster): static
+    public function setPoster(?string $poster): static
     {
         $this->poster = $poster;
 
         return $this;
     }
 
-    public function getDatetime(): ?\DateTime
+    public function getDateCreated(): ?\DateTime
     {
-        return $this->datetime;
+        return $this->dateCreated;
     }
 
-    public function setDateCreated(\DateTime $DateCreated): static
+    public function setDateCreated(): static
     {
-        $this->datetime = $DateCreated;
+        $this->dateCreated = new \DateTime();
 
         return $this;
     }
@@ -121,19 +122,19 @@ class Season
         return $this->dateModified;
     }
 
-    public function setDateModified(?\DateTime $dateModified): static
+    public function setDateModified(): static
     {
-        $this->dateModified = $dateModified;
+        $this->dateModified = new \DateTime();
 
         return $this;
     }
 
-    public function getSerie(): ?serie
+    public function getSerie(): ?Serie
     {
         return $this->serie;
     }
 
-    public function setSerie(?serie $serie): static
+    public function setSerie(?Serie $serie): static
     {
         $this->serie = $serie;
 

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/serie', name: 'serie')]
@@ -19,26 +20,30 @@ final class SerieController extends AbstractController
 {
 
     #[Route('/list/{page}', name: '_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function list(SerieRepository $serieRepository, int $page, ParameterBagInterface $parameters): Response
     {
         //$series = $serieRepository->findAll();
 
-        $nbPerPage = $parameters->get('serie')['nb_max'];
-        $offset = ($page - 1) * $nbPerPage;
+        $nbParPage = $parameters->get('serie')['nb_max'];
+        $offset = ($page - 1) * $nbParPage;
         $criterias = [
 //            'status' => 'Returning',
 //            'genre' => 'Drama',
         ];
 
-        $series = $serieRepository->findBy(
-            $criterias,
-            ['popularity' => 'DESC'],
-            $nbPerPage,
-            $offset
-        );
+//        $series = $serieRepository->findBy(
+//            $criterias,
+//            ['popularity' => 'DESC'],
+//            $nbPerPage,
+//            $offset
+//        );
+
+        $series = $serieRepository->getSeriesWithSeasons( $nbParPage, $offset);
+
 
         $total = $serieRepository->count($criterias);
-        $totalPages = ceil($total / $nbPerPage);
+        $totalPages = ceil($total / $nbParPage);
 
         return $this->render('serie/list.html.twig', [
                 'series' => $series,
@@ -49,6 +54,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/liste-custom', name: '_custom_list')]
+    #[IsGranted('ROLE_USER')]
     public function listCustom(SerieRepository $serieRepository): Response
     {
         //$series = $serieRepository->findSeriesCustom(400, 8);
@@ -65,6 +71,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
     public function detail(Serie $serie): Response
     {
 
@@ -74,6 +81,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/create', name: '_create')]
+    #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, ParameterBagInterface $parameterBag): Response
     {
         $serie = new Serie();

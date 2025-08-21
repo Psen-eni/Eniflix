@@ -90,6 +90,7 @@ class Serie
     #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'serie', orphanRemoval: true)]
     private Collection $seasons;
 
+
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
